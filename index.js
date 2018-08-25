@@ -46,9 +46,11 @@ app.get('/produto/:id', (req,res) => {
 
 app.post('/produto', (req,res) => {
 
+  let message = '';
+
   const schema = {
     'name': Joi.string().min(3).required(),
-    'quant': Joi.number().min(1).integer().positive().default(1),
+    'quant': Joi.number().min(1).integer().positive(),
     'type': Joi.string().valid('Camisa', 'Calca', 'Calcado', 'Acessorio').required()
   };
 
@@ -62,22 +64,26 @@ app.post('/produto', (req,res) => {
 
   products.forEach((item) => {
     if (item.name === req.body.name) {
-      item.quant += req.body.quant;
+      item.quant += req.body.quant || 1;
 
-      res.send(`Item ${item.name} já existe no estoque, 
-      quantidade aumentada para ${item.quant}`);
+      message = `Item ${item.name} já existe no estoque, 
+      quantidade aumentada para ${item.quant}`;
     }
   });
 
-  const product = {
-    'id': products.length + 1,
-    'name': req.body.name,
-    'quant': req.body.quant,
-    'type': req.body.type
-  };
+  if (!message) {
+    const product = {
+      'id': products.length + 1,
+      'name': req.body.name,
+      'quant': req.body.quant || 1,
+      'type': req.body.type
+    };
 
-  products.push(product);
-  res.send(`Produto cadastrado com sucesso: ${product.name}`);
+    products.push(product);
+    message = `Produto cadastrado com sucesso: ${product.name}`;
+  }
+
+  res.send(message);
 });
 
 const port = process.env.PORT || 3000;
