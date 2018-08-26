@@ -35,12 +35,36 @@ app.get('/produto', (req, res) => {
   res.send(products);
 });
 
+function findProduct (id) {
+  const product = products.find((item) => item.id === parseInt(id));
+  return product;
+}
+
+function validateProduct (product, update = false) {
+  let schema = null;
+  if (update) {
+    schema = {
+      'name': Joi.string().min(3),
+      'quant': Joi.number().greater(1).integer(),
+      'type': Joi.string().valid('Camisa', 'Calca', 'Calcado', 'Acessorio')
+    };
+  } else {
+    schema = {
+      'name': Joi.string().min(3).required(),
+      'quant': Joi.number().greater(1).integer(),
+      'type': Joi.string().valid('Camisa', 'Calca', 'Calcado', 'Acessorio').required()
+    };
+  }
+
+  return Joi.validate(product, schema);
+}
+
 app.get('/produto/:id', (req,res) => {
-  const product = products.find((item) => item.id === parseInt(req.params.id));
+  const product = findProduct(req.params.id);
   if (product) {
     res.send(product);
   } else {
-    res.status(404).send(`Item ${req.params.id} não encotrado`);
+    res.status(404).send(`Item ${req.params.id} não encontrado`);
   }
 });
 
@@ -48,22 +72,14 @@ app.post('/produto', (req,res) => {
 
   let message = '';
 
-  const schema = {
-    'name': Joi.string().min(3).required(),
-    'quant': Joi.number().min(1).integer().positive(),
-    'type': Joi.string().valid('Camisa', 'Calca', 'Calcado', 'Acessorio').required()
-  };
+  const {error} = validateProduct(req.body);
 
-  const result = Joi.validate(req.body, schema);
-
-  if (result.error) {
-    res.status(400).send(result.error.details[0].message);
-
-    return;
+  if (error) {
+    return res.status(400).send(error.details[0].message);
   }
 
   products.forEach((item) => {
-    if (item.name === req.body.name) {
+    if (item.name.toLowerCase() === req.body.name.toLowerCase()) {
       item.quant += req.body.quant || 1;
 
       message = `Item ${item.name} já existe no estoque, 
@@ -83,7 +99,39 @@ app.post('/produto', (req,res) => {
     message = `Produto cadastrado com sucesso: ${product.name}`;
   }
 
-  res.send(message);
+  return res.send(message);
+});
+
+app.put('/produto/:id', (req,res) => {
+  const product = findProduct(req.params.id);
+  if (!product) {
+    return res.status(404).send(`Item ${req.params.id} não encontrado`);
+  }
+
+  const {error} = validateProduct(req.body, true);
+
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  product.name = req.body.name || product.name;
+  product.quant = req.body.quant || product.quant;
+  product.type = req.body.type || product.type;
+
+  return res.send(`Produto atualizado com sucesso: ${product.name}`);
+});
+
+app.delete('/produto/:id', (req,res) => {
+
+  const product = findProduct(req.params.id);
+  if (!product) {
+    return res.status(404).send(`Item ${req.params.id} não encontrado`);
+  }
+
+  const index = products.indexOf(product);
+  products.splice(index,1);
+
+  return res.send(`Item deletado com sucesso ${product.name}`);
 });
 
 const port = process.env.PORT || 3000;
