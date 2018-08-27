@@ -27,13 +27,7 @@ const products = [
 'type': 'Acessorio'}
 ];
 
-app.get('/', (req,res) => {
-  res.send('MyOutlets!');
-});
-
-app.get('/produto', (req, res) => {
-  res.send(products);
-});
+const bag = [];
 
 function findProduct (id) {
   const product = products.find((item) => item.id === parseInt(id));
@@ -45,19 +39,42 @@ function validateProduct (product, update = false) {
   if (update) {
     schema = {
       'name': Joi.string().min(3),
-      'quant': Joi.number().greater(1).integer(),
+      'quant': Joi.number().min(1).integer(),
       'type': Joi.string().valid('Camisa', 'Calca', 'Calcado', 'Acessorio')
     };
   } else {
     schema = {
       'name': Joi.string().min(3).required(),
-      'quant': Joi.number().greater(1).integer(),
+      'quant': Joi.number().min(1).integer(),
       'type': Joi.string().valid('Camisa', 'Calca', 'Calcado', 'Acessorio').required()
     };
   }
 
   return Joi.validate(product, schema);
 }
+
+function validateQuant (productQuant, newQuant) {
+  if (productQuant < newQuant) {
+    return 'Quantidade do produto indisponível no estoque';
+  }
+  return '';
+}
+
+app.get('/', (req,res) => {
+  res.send('MyOutlets!');
+});
+
+app.get('/produto', (req, res) => {
+  res.send(products);
+});
+
+app.get('/sacola', (req, res) => {
+  if (bag.length === 0) {
+    res.send('Sua sacola está vazia');
+  } else {
+    res.send(bag);
+  }
+});
 
 app.get('/produto/:id', (req,res) => {
   const product = findProduct(req.params.id);
@@ -97,6 +114,52 @@ app.post('/produto', (req,res) => {
 
     products.push(product);
     message = `Produto cadastrado com sucesso: ${product.name}`;
+  }
+
+  return res.send(message);
+});
+
+app.post('/sacola', (req,res) => {
+  let message = '';
+  const schema = {
+    'id': Joi.number().integer().min(1).required(),
+    'quant': Joi.number().integer().min(1)
+  };
+  const result = Joi.validate(req.body,schema);
+
+  if (result.error) {
+    return res.status(400).send(result.error.details[0].message);
+  }
+
+  const product = findProduct(req.body.id);
+  if (!product) {
+    message = `Item ${req.body.id} não encontrado`;
+    return res.status(404).send(message);
+  }
+
+  message = validateQuant(product.quant, req.body.quant);
+  if (!message) {
+    product.quant = req.body.quant || 1;
+  }
+
+  bag.forEach((item) => {
+    if (item.id === product.id) {
+      const newQuant = item.quant + (product.quant || 1);
+
+      message = validateQuant(product.quant, newQuant);
+      if (!message) {
+        item.quant = newQuant;
+
+        message = `Item ${item.name} já existe na sacola,
+        quantidade aumentada para ${item.quant}`;
+      }
+    }
+  });
+
+  if (!message) {
+    bag.push(product);
+
+    message = `Item ${product.name} adicionado à sua sacola`;
   }
 
   return res.send(message);
