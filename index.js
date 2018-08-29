@@ -2,9 +2,9 @@ const Joi = require('joi');
 const morgan = require('morgan');
 const express = require('express');
 const app = express();
+
 app.use(express.json());
 app.use(morgan('tiny'));
-
 app.use(express.static('static'));
 
 const products = [
@@ -73,7 +73,7 @@ app.get('/', (req,res) => {
 });
 
 app.get('/produto', (req, res) => {
-  res.send(products);
+  res.status(200).send(products);
 });
 
 app.get('/sacola', (req, res) => {
@@ -87,7 +87,7 @@ app.get('/sacola', (req, res) => {
 app.get('/produto/:id', (req,res) => {
   const product = findProduct(req.params.id);
   if (product) {
-    res.send(product);
+    res.status(200).send(product);
   } else {
     res.status(404).send(`Item ${req.params.id} não encontrado`);
   }
@@ -124,7 +124,7 @@ app.post('/produto', (req,res) => {
     message = `Produto cadastrado com sucesso: ${product.name}`;
   }
 
-  return res.send(message);
+  return res.status(200).send(message);
 });
 
 app.post('/sacola', (req,res) => {
@@ -170,7 +170,7 @@ app.post('/sacola', (req,res) => {
     message = `Item ${product.name} adicionado à sua sacola`;
   }
 
-  return res.send(message);
+  return res.status(200).send(message);
 });
 
 app.put('/produto/:id', (req,res) => {
@@ -189,7 +189,7 @@ app.put('/produto/:id', (req,res) => {
   product.quant = req.body.quant || product.quant;
   product.type = req.body.type || product.type;
 
-  return res.send(`Produto atualizado com sucesso: ${product.name}`);
+  return res.status(200).send(`Produto atualizado com sucesso: ${product.name}`);
 });
 
 app.delete('/produto/:id', (req,res) => {
@@ -202,8 +202,10 @@ app.delete('/produto/:id', (req,res) => {
   const index = products.indexOf(product);
   products.splice(index,1);
 
-  return res.send(`Item deletado com sucesso ${product.name}`);
+  return res.status(200).send(`Item deletado com sucesso ${product.name}`);
 });
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
+
+module.exports = app;
