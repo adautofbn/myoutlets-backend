@@ -1,8 +1,11 @@
 const Joi = require('joi');
-
+const morgan = require('morgan');
 const express = require('express');
 const app = express();
 app.use(express.json());
+app.use(morgan('tiny'));
+
+app.use(express.static('static'));
 
 const products = [
   {'id': 1,
@@ -60,8 +63,13 @@ function validateQuant (productQuant, newQuant) {
   return '';
 }
 
+app.get((req,res, next) => {
+  res.setHeader('Content-Type', 'application/json');
+  next();
+});
+
 app.get('/', (req,res) => {
-  res.send('MyOutlets!');
+  res.send('MyOutlet`s!');
 });
 
 app.get('/produto', (req, res) => {
