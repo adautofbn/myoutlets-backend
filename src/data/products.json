@@ -1,0 +1,22 @@
+[
+    {"id": 1,
+  "name": "camisa1",
+  "quant": 1,
+  "type": "Camisa"},
+    {"id": 2,
+  "name": "camisa2",
+  "quant": 1,
+  "type": "Camisa"},
+    {"id": 3,
+  "name": "calca1",
+  "quant": 1,
+  "type": "Calca"},
+    {"id": 4,
+  "name": "sapato1",
+  "quant": 1,
+  "type": "Calcado"},
+    {"id": 5,
+  "name": "cinto1",
+  "quant": 1,
+  "type": "Acessorio"}
+]

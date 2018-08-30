@@ -2,177 +2,25 @@ const morgan = require('morgan');
 const express = require('express');
 const app = express();
 
-const validUtil = require('./util/validate.util.js');
-const productUtil = require('./util/product.util');
-
-const prod = require('./routes/product.route.js');
-
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('static'));
 
-const products = [
-  {'id': 1,
-'name': 'camisa1',
-'quant': 1,
-'type': 'Camisa'},
-  {'id': 2,
-'name': 'camisa2',
-'quant': 1,
-'type': 'Camisa'},
-  {'id': 3,
-'name': 'calca1',
-'quant': 1,
-'type': 'Calca'},
-  {'id': 4,
-'name': 'sapato1',
-'quant': 1,
-'type': 'Calcado'},
-  {'id': 5,
-'name': 'cinto1',
-'quant': 1,
-'type': 'Acessorio'}
-];
+const productRoute = require('./routes/product.route.js');
+const bagRoute = require('./routes/bag.route');
 
-const bag = [];
+app.use('/produto', productRoute);
+app.use('/bolsa', bagRoute);
+
+app.use((req,res,next) => {
+  next();
+});
 
 app.get('/', (req,res) => {
   res.send('MyOutlet`s!');
 });
 
-app.get('/produto', (req, res) => {
-  res.status(200).send(products);
-});
-
-app.get('/bolsa', (req, res) => {
-  if (bag.length === 0) {
-    res.send('Sua sacola está vazia');
-  } else {
-    res.send(bag);
-  }
-});
-
-app.get('/produto/:id', (req,res) => {
-  const product = productUtil.findProduct(products,req.params.id);
-  if (product) {
-    res.status(200).send(product);
-  } else {
-    res.status(404).send(`Item ${req.params.id} não encontrado`);
-  }
-});
-
-app.post('/produto', (req,res) => {
-
-  let message = '';
-
-  const {error} = validUtil.validateProduct(req.body);
-
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
-
-  products.forEach((item) => {
-    if (item.name.toLowerCase() === req.body.name.toLowerCase()) {
-      item.quant += req.body.quant || 1;
-
-      message = `Item ${item.name} já existe no estoque, 
-      quantidade aumentada para ${item.quant}`;
-    }
-  });
-
-  if (!message) {
-    const product = {
-      'id': products.length + 1,
-      'name': req.body.name,
-      'quant': req.body.quant || 1,
-      'type': req.body.type
-    };
-
-    products.push(product);
-    message = `Produto cadastrado com sucesso: ${product.name}`;
-  }
-
-  return res.status(200).send(message);
-});
-
-app.post('/bolsa', (req,res) => {
-  let message = '';
-
-  const {error} = validUtil.validateId(req.body);
-
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
-
-  const product = productUtil.findProduct(products,req.body.id);
-  if (!product) {
-    message = `Item ${req.body.id} não encontrado`;
-    return res.status(404).send(message);
-  }
-
-  message = validUtil.validateQuant(product.quant, req.body.quant);
-  if (!message) {
-    product.quant = req.body.quant || 1;
-  }
-
-  bag.forEach((item) => {
-    if (item.id === product.id) {
-      const newQuant = item.quant + (product.quant || 1);
-
-      message = validUtil.validateQuant(product.quant, newQuant);
-      if (!message) {
-        item.quant = newQuant;
-
-        message = `Item ${item.name} já existe na bolsa,
-        quantidade aumentada para ${item.quant}`;
-      }
-    }
-  });
-
-  if (!message) {
-    bag.push(product);
-
-    message = `Item ${product.name} adicionado à sua bolsa`;
-  }
-
-  return res.status(200).send(message);
-});
-
-app.put('/produto/:id', (req,res) => {
-  const product = productUtil.findProduct(products,req.params.id);
-  if (!product) {
-    return res.status(404).send(`Item ${req.params.id} não encontrado`);
-  }
-
-  const {error} = validUtil.validateProduct(req.body, true);
-
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
-
-  product.name = req.body.name || product.name;
-  product.quant = req.body.quant || product.quant;
-  product.type = req.body.type || product.type;
-
-  return res.status(200).send(`Produto atualizado com sucesso: ${product.name}`);
-});
-
-app.delete('/produto/:id', (req,res) => {
-
-  const product = productUtil.findProduct(products,req.params.id);
-  if (!product) {
-    return res.status(404).send(`Item ${req.params.id} não encontrado`);
-  }
-
-  const index = products.indexOf(product);
-  products.splice(index,1);
-
-  return res.status(200).send(`Item deletado com sucesso ${product.name}`);
-});
-
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
-
-app.use('/prod', prod);
 
 module.exports = app;
