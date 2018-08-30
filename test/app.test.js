@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-const app = require('../index');
+const app = require('../src/index');
 const request = require('supertest');
 const mocha = require('mocha');
 
