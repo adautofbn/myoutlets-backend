@@ -10,16 +10,16 @@ router.use((req,res,next) => {
     next();
 });
 
-function getProducts () {
-    return products;
-}
-
 router.get('/', (req,res) => {
-    res.send(products);
+  let array = products;
+  if (req.query.type) {
+    array = products.filter((product) => product.type === req.query.type.toLowerCase());
+  }
+  res.send(array);
 });
 
 router.get('/:id', (req,res) => {
-    const product = productUtil.findProduct(getProducts(),req.params.id);
+    const product = productUtil.findProduct(products,req.params.id);
     if (product) {
       res.status(200).send(product);
     } else {
@@ -38,7 +38,7 @@ router.post('/', (req,res) => {
     }
 
     products.forEach((item) => {
-      if (item.name.toLowerCase() === req.body.name.toLowerCase()) {
+      if (item.name === req.body.name.toLowerCase()) {
         item.quant += req.body.quant || 1;
 
         message = `Item ${item.name} já existe no estoque, 
@@ -49,9 +49,9 @@ router.post('/', (req,res) => {
     if (!message) {
       const product = {
         'id': products.length + 1,
-        'name': req.body.name,
+        'name': req.body.name.toLowerCase(),
         'quant': req.body.quant || 1,
-        'type': req.body.type
+        'type': req.body.type.toLowerCase()
       };
 
       products.push(product);
