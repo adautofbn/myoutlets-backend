@@ -13,9 +13,9 @@ router.use((req,res,next) => {
 
 router.get('/', (req, res) => {
     if (bag.length === 0) {
-      res.send('Sua bolsa está vazia');
+      res.json('Sua bolsa está vazia');
     } else {
-      res.send(bag);
+      res.json(bag);
     }
 });
 
@@ -25,13 +25,13 @@ router.post('/', (req,res) => {
     const {error} = validUtil.validateId(req.body);
 
     if (error) {
-      return res.status(400).send(error.details[0].message);
+      return res.status(400).json(error.details[0].message);
     }
 
     const product = productUtil.findProduct(products,req.body.id);
     if (!product) {
       message = `Item ${req.body.id} não encontrado`;
-      return res.status(404).send(message);
+      return res.status(404).json(message);
     }
 
     message = validUtil.validateQuant(product.quant, req.body.quant);
@@ -59,7 +59,7 @@ router.post('/', (req,res) => {
       message = `Item ${product.name} adicionado à sua bolsa`;
     }
 
-    return res.status(200).send(message);
+    return res.status(200).json(message);
 });
 
 module.exports = router;

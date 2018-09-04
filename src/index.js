@@ -12,12 +12,8 @@ const bagRoute = require('./routes/bag.route');
 app.use('/produto', productRoute);
 app.use('/bolsa', bagRoute);
 
-app.use((req,res,next) => {
-  next();
-});
-
 app.get('/', (req,res) => {
-  res.send('MyOutlet`s!');
+  res.json('Welcome to MyOutlet`s');
 });
 
 const port = process.env.PORT || 3000;
