@@ -8,9 +8,11 @@ app.use(express.static('static'));
 
 const productRoute = require('./routes/product.route.js');
 const bagRoute = require('./routes/bag.route');
+const swaggerRoute = require('./routes/docs.route.js');
 
 app.use('/produto', productRoute);
 app.use('/bolsa', bagRoute);
+app.use('/docs', swaggerRoute);
 
 app.get('/', (req,res) => {
   res.json('Welcome to MyOutlet`s');
