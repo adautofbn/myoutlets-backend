@@ -12,6 +12,7 @@ const swaggerDef = {
         '/produto': {
             'get': {
                 'summary': 'All products in store',
+                'tags': {'': 'produto'},
                 'description': 'Returns a list of all products posted in the store',
                 'responses': {
                     '200': {
