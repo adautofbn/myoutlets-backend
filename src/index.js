@@ -6,9 +6,9 @@ app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('static'));
 
-const productRoute = require('./routes/product.route.js');
-const bagRoute = require('./routes/bag.route');
-const swaggerRoute = require('./routes/docs.route.js');
+const productRoute = require('./product/product.route.js');
+const bagRoute = require('./bag/bag.route');
+const swaggerRoute = require('./docs/docs.route.js');
 
 app.use('/produto', productRoute);
 app.use('/bolsa', bagRoute);
