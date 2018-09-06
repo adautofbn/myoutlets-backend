@@ -6,7 +6,7 @@ const swaggerDef = {
     'info': {
         'description': 'Loja virtual com vários fornecedores de roupa',
         'title': 'MyOutlet`s',
-        'version': '1.0.0'
+        'version': '1.2.7'
     }
 };
 

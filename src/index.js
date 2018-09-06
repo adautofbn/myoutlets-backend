@@ -1,10 +1,13 @@
 const morgan = require('morgan');
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('static'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({'extended': false}));
 
 const productRoute = require('./product/product.route.js');
 const bagRoute = require('./bag/bag.route');

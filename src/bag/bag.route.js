@@ -71,7 +71,7 @@ router.delete('/', (req,res) => {
   const index = bag.indexOf(product);
   bag.splice(index,1);
 
-  return res.status(200).json(`Item deletado com sucesso ${product.name}`);
+  return res.status(200).json(`Item deletado da sua bolsa com sucesso ${product.name}`);
 });
 
 module.exports = router;

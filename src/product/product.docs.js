@@ -2,8 +2,8 @@
  * @swagger
  *
  * definitions:
- *  product:
- *      type: application/json
+ *  Produto:
+ *      type: object
  *      properties:
  *          name:
  *              type: string
@@ -26,12 +26,16 @@
  *      - application/json
  *     parameters:
  *      - in: query
- *        name: type
+ *        name: Tipo
  *        type: string
  *        description: Filtro de tipos de produtos do estoque
  *     responses:
  *       200:
  *         description: Array com todos os produtos
+ *         schema:
+ *              type: array
+ *              items:
+ *                  $ref: '#/definitions/Produto'
  *
  *   post:
  *     tags:
@@ -43,12 +47,12 @@
  *     produces:
  *      - application/json
  *     parameters:
- *      - name: product
+ *      - name: Novo Produto
  *        in: body
- *        description: Novo produto
+ *        description: Propriedades do novo produto
  *        required: true
  *        schema:
- *          $ref: '#/definitions/product'
+ *          $ref: '#/definitions/Produto'
  *     responses:
  *       200:
  *         description: Produto adicionado com sucesso
@@ -70,6 +74,8 @@
  *      responses:
  *          200:
  *              description: Produto em estoque
+ *              schema:
+ *                  $ref: '#/definitions/Produto'
  *
  *  put:
  *      tags:
@@ -86,10 +92,11 @@
  *            type: integer
  *            required: true
  *            description: Numero do produto dentro do estoque
- *          - in: body
+ *          - name: Update
+ *            in: body
  *            description: Valores a serem atualizados
  *            schema:
- *              $ref: '#/definitions/product'
+ *              $ref: '#/definitions/Produto'
  *      responses:
  *          200:
  *              description: Produto atualizado

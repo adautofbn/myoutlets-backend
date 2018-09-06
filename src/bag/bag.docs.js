@@ -2,8 +2,8 @@
  * @swagger
  *
  * definitions:
- *  productById:
- *      type: application/json
+ *  ProdutoById:
+ *      type: object
  *      properties:
  *          id:
  *              type: integer
@@ -27,6 +27,10 @@
  *     responses:
  *       200:
  *         description: Array com todos os produtos
+ *         schema:
+ *              type: array
+ *              items:
+ *                  $ref: '#/definitions/Produto'
  *
  *   post:
  *     tags:
@@ -38,12 +42,12 @@
  *     produces:
  *      - application/json
  *     parameters:
- *      - name: product
+ *      - name: Produto
  *        in: body
- *        description: Novo produto
+ *        description: Produto do estoque que deve ser adicionado na bolsa
  *        required: true
  *        schema:
- *          $ref: '#/definitions/productById'
+ *          $ref: '#/definitions/ProdutoById'
  *     responses:
  *       200:
  *         description: Produto adicionado com sucesso
@@ -59,8 +63,10 @@
  *      - in: query
  *        name: id
  *        type: integer
+ *        required: true
+ *        minimum: 1
  *        description: Id do produto que vai ser excluído
  *     responses:
  *        200:
- *          description: Produto excluído
+ *          description: Produto excluído da bolsa
  */
