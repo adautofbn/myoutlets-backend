@@ -62,4 +62,17 @@ router.post('/', (req,res) => {
     return res.status(200).json(message);
 });
 
+router.delete('/', (req,res) => {
+
+  const product = productUtil.findProduct(bag,req.query.id);
+  if (!product) {
+    return res.status(404).json(`Item ${req.query.id} não encontrado`);
+  }
+
+  const index = bag.indexOf(product);
+  bag.splice(index,1);
+
+  return res.status(200).json(`Item deletado com sucesso ${product.name}`);
+});
+
 module.exports = router;

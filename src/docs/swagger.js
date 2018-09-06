@@ -4,7 +4,7 @@ const swaggerDef = {
     'basePath': '/',
     'host': 'localhost:3000',
     'info': {
-        'description': 'Virtual store with multiple clothing suppliers',
+        'description': 'Loja virtual com vários fornecedores de roupa',
         'title': 'MyOutlet`s',
         'version': '1.0.0'
     }

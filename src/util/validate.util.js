@@ -1,18 +1,25 @@
 const Joi = require('joi');
 
+const types = [
+'camisa',
+'calca',
+'calcado',
+'acessorio'
+];
+
 function validateProduct (product, update = false) {
     let schema = null;
     if (update) {
       schema = {
         'name': Joi.string().min(3),
         'quant': Joi.number().min(1).integer(),
-        'type': Joi.string().valid('Camisa', 'Calca', 'Calcado', 'Acessorio')
+        'type': Joi.string().valid(types)
       };
     } else {
       schema = {
         'name': Joi.string().min(3).required(),
         'quant': Joi.number().min(1).integer(),
-        'type': Joi.string().valid('Camisa', 'Calca', 'Calcado', 'Acessorio').required()
+        'type': Joi.string().valid(types).required()
       };
     }
 
@@ -20,10 +27,12 @@ function validateProduct (product, update = false) {
 }
 
 function validateQuant (productQuant, newQuant) {
+    let message = '';
     if (productQuant < newQuant) {
-      return 'Quantidade do produto indisponível no estoque';
+      message = 'Quantidade do produto indisponível no estoque';
     }
-    return '';
+
+    return message;
 }
 
 function validateId (product) {
