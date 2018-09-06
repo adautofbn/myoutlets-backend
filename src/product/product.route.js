@@ -41,8 +41,7 @@ router.post('/', (req,res) => {
       if (item.name === req.body.name.toLowerCase()) {
         item.quant += req.body.quant || 1;
 
-        message = `Item ${item.name} já existe no estoque, 
-        quantidade aumentada para ${item.quant}`;
+        message = `Item ${item.name} já existe no estoque, quantidade aumentada para ${item.quant}`;
       }
     });
 

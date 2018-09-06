@@ -47,8 +47,7 @@ router.post('/', (req,res) => {
         if (!message) {
           item.quant = newQuant;
 
-          message = `Item ${item.name} já existe na bolsa,
-          quantidade aumentada para ${item.quant}`;
+          message = `Item ${item.name} já existe na bolsa, quantidade aumentada para ${item.quant}`;
         }
       }
     });
