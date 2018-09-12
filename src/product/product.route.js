@@ -11,11 +11,11 @@ router.use((req,res,next) => {
 });
 
 router.get('/', (req,res) => {
-  let array = products;
+  let filteredProducts = products;
   if (req.query.type) {
-    array = products.filter((product) => product.type === req.query.type.toLowerCase());
+    filteredProducts = products.filter((product) => product.type === req.query.type.toLowerCase());
   }
-  res.json(array);
+  res.json(filteredProducts);
 });
 
 router.get('/:id', (req,res) => {
@@ -89,7 +89,7 @@ router.delete('/:id', (req,res) => {
     const index = products.indexOf(product);
     products.splice(index,1);
 
-    return res.status(200).json(`Item deletado com sucesso ${product.name}`);
+    return res.status(200).json(`Item deletado com sucesso: ${product.name}`);
 });
 
 module.exports = router;
