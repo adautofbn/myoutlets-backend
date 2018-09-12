@@ -26,7 +26,7 @@
  *      - application/json
  *     parameters:
  *      - in: query
- *        name: Tipo
+ *        name: type
  *        type: string
  *        description: Filtro de tipos de produtos do estoque
  *     responses:

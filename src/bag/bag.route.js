@@ -1,11 +1,15 @@
 const express = require('express');
 const router = new express.Router();
+const cache = require('memory-cache');
 
 const productUtil = require('../product/product.util');
 const validUtil = require('../util/validate.util');
 
 const products = require('../product/products.json');
 const bag = require('./bag.json');
+
+cache.put('products', products);
+cache.put('bag', bag);
 
 router.use((req,res,next) => {
     next();
@@ -15,7 +19,7 @@ router.get('/', (req, res) => {
     if (bag.length === 0) {
       res.json('Sua bolsa está vazia');
     } else {
-      res.json(bag);
+      res.json(cache.get('bag'));
     }
 });
 
@@ -28,7 +32,7 @@ router.post('/', (req,res) => {
       return res.status(400).json(error.details[0].message);
     }
 
-    const product = productUtil.findProduct(products,req.body.id);
+    const product = productUtil.findProduct(cache.get('products'),req.body.id);
     if (!product) {
       message = `Item ${req.body.id} não encontrado`;
       return res.status(404).json(message);
@@ -54,10 +58,10 @@ router.post('/', (req,res) => {
 
     if (!message) {
       bag.push(product);
-
       message = `Item ${product.name} adicionado à sua bolsa`;
     }
 
+    cache.put('bag',bag);
     return res.status(200).json(message);
 });
 
@@ -71,6 +75,7 @@ router.delete('/', (req,res) => {
   const index = bag.indexOf(product);
   bag.splice(index,1);
 
+  cache.put('bag', bag);
   return res.status(200).json(`Item deletado da sua bolsa com sucesso ${product.name}`);
 });
 

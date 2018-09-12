@@ -1,25 +1,28 @@
 const express = require('express');
 const router = new express.Router();
+const cache = require('memory-cache');
 
 const userUtil = require('./user.util');
 const validUtil = require('../util/validate.util');
 
 const users = require('./users.json');
 
+cache.put('users', users);
+
 router.use((req,res,next) => {
     next();
 });
 
 router.get('/', (req,res) => {
-  let filteredUsers = users;
+  let filteredUsers = cache.get('users');
   if (req.query.type) {
-    filteredUsers = users.filter((user) => user.type === req.query.type.toLowerCase());
+    filteredUsers = cache.get('users').filter((user) => user.type === req.query.type.toLowerCase());
   }
   res.json(filteredUsers);
 });
 
 router.get('/:id', (req,res) => {
-    const user = userUtil.findUser(users,req.params.id);
+    const user = userUtil.findUser(cache.get('users'),req.params.id);
     if (user) {
       res.status(200).json(user);
     } else {
@@ -37,7 +40,7 @@ router.post('/', (req,res) => {
       return res.status(400).json(error.details[0].message);
     }
 
-    const filteredUsers = users.filter((user) => user.email === req.body.email.toLowerCase());
+    const filteredUsers = cache.get('users').filter((user) => user.email === req.body.email.toLowerCase());
 
     if (filteredUsers.length > 0) {
         message = `Email ${req.body.email} já cadastrado`;
@@ -56,11 +59,12 @@ router.post('/', (req,res) => {
       message = `Usuário cadastrado com sucesso: ${user.name}`;
     }
 
+    cache.put('users', users);
     return res.status(200).json(message);
 });
 
 router.put('/:id', (req,res) => {
-    const user = userUtil.findUser(users,req.params.id);
+    const user = userUtil.findUser(cache.get('users'),req.params.id);
     if (!user) {
       return res.status(404).json(`Usuário ${req.params.id} não encontrado`);
     }
@@ -76,12 +80,13 @@ router.put('/:id', (req,res) => {
     user.password = req.body.password || user.password;
     user.type = req.body.type || user.type;
 
+    cache.put('users', users);
     return res.status(200).json(`Usuário atualizado com sucesso: ${user.name}`);
 });
 
 router.delete('/:id', (req,res) => {
 
-    const user = userUtil.findUser(users,req.params.id);
+    const user = userUtil.findUser(cache.get('users'),req.params.id);
     if (!user) {
       return res.status(404).json(`Usuário ${req.params.id} não encontrado`);
     }
@@ -89,6 +94,7 @@ router.delete('/:id', (req,res) => {
     const index = users.indexOf(user);
     users.splice(index,1);
 
+    cache.put('users', users);
     return res.status(200).json(`Usuário deletado com sucesso: ${user.name}`);
 });
 

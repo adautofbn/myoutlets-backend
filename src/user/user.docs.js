@@ -28,7 +28,7 @@
  *      - application/json
  *     parameters:
  *      - in: query
- *        name: Tipo
+ *        name: type
  *        type: string
  *        description: Filtro de tipos de usuários cadastrados
  *     responses:
