@@ -7,6 +7,8 @@ const validUtil = require('../util/validate.util');
 
 const users = require('./users.json');
 
+const UserModel = require('./user.model');
+
 cache.put('users', users);
 
 router.use((req,res,next) => {
@@ -23,6 +25,14 @@ router.get('/', (req,res) => {
 
 router.get('/:id', (req,res) => {
     const user = userUtil.findUser(cache.get('users'),req.params.id);
+
+    /* UserModel.find(req.body.id,(err, user) => {
+      if (err) {
+        res.status(404).send(`Usuário ${req.params.id} não encontrado`);
+      }
+      res.status(200).send(user.toJSON());
+    }); */
+
     if (user) {
       res.status(200).json(user);
     } else {
@@ -56,6 +66,22 @@ router.post('/', (req,res) => {
       };
 
       users.push(user);
+
+      const newUser = new UserModel({
+        'id': users.length,
+        'name': req.body.name,
+        'email': req.body.email.toLowerCase(),
+        'password': req.body.password,
+        'type': req.body.type.toLowerCase()
+      });
+
+      newUser.save((err) => {
+        if (err) {
+          console.error(err);
+        }
+        console.log('ok');
+      });
+
       message = `Usuário cadastrado com sucesso: ${user.name}`;
     }
 

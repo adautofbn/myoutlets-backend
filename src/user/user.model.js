@@ -1,32 +1,11 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    'id': {
-        'type': String,
-        'required': true
-    },
-    'name': {
-        'type': String,
-        'minlength': 3,
-        'required': true
-    },
-    'email': {
-        'type': String,
-        'required': true
-    },
-    'password': {
-        'type': String,
-        'minlength': 6,
-        'required': true
-    },
-    'type': {
-        'type': String,
-        'enum': [
-            'representante',
-            'cliente'
-        ],
-        'required': true
-    }
+    'id': Number,
+    'name': String,
+    'email': String,
+    'password': String,
+    'type': String
 });
 
 const user = mongoose.model('User', userSchema);

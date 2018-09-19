@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const mongoose = require('mongoose');
-const MongodbMemoryServer = require('mongodb-memory-server');
+const MongodbMemoryServer = require('mongodb-memory-server').default;
 
 const mongoServer = new MongodbMemoryServer();
 
