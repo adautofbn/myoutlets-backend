@@ -3,6 +3,21 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
+const mongoose = require('mongoose');
+const MongodbMemoryServer = require('mongodb-memory-server');
+
+const mongoServer = new MongodbMemoryServer();
+
+mongoose.Promise = Promise;
+mongoServer.getConnectionString().then((mongoUri) => {
+  const mongooseOpts = {
+    'autoReconnect': true,
+    'reconnectTries': Number.MAX_VALUE,
+    'reconnectInterval': 1000
+  };
+  mongoose.connect(mongoUri, mongooseOpts);
+});
+
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('static'));
