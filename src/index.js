@@ -4,19 +4,9 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const mongoose = require('mongoose');
-const MongodbMemoryServer = require('mongodb-memory-server').default;
-
-const mongoServer = new MongodbMemoryServer();
 
 mongoose.Promise = Promise;
-mongoServer.getConnectionString().then((mongoUri) => {
-  const mongooseOpts = {
-    'autoReconnect': true,
-    'reconnectTries': Number.MAX_VALUE,
-    'reconnectInterval': 1000
-  };
-  mongoose.connect(mongoUri, mongooseOpts);
-});
+mongoose.connect('mongodb://127.0.0.1/modb');
 
 app.use(express.json());
 app.use(morgan('tiny'));

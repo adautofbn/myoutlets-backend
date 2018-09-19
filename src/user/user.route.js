@@ -11,10 +11,6 @@ const UserModel = require('./user.model');
 
 cache.put('users', users);
 
-router.use((req,res,next) => {
-    next();
-});
-
 router.get('/', (req,res) => {
   let filteredUsers = cache.get('users');
   if (req.query.type) {
@@ -24,20 +20,12 @@ router.get('/', (req,res) => {
 });
 
 router.get('/:id', (req,res) => {
-    const user = userUtil.findUser(cache.get('users'),req.params.id);
-
-    /* UserModel.find(req.body.id,(err, user) => {
+    UserModel.find({'id': req.params.id}).then((user,err) => {
       if (err) {
-        res.status(404).send(`Usuário ${req.params.id} não encontrado`);
+        res.status(404).json(`Usuário ${req.params.id} não encontrado`);
       }
-      res.status(200).send(user.toJSON());
-    }); */
-
-    if (user) {
       res.status(200).json(user);
-    } else {
-      res.status(404).json(`Usuário ${req.params.id} não encontrado`);
-    }
+    });
 });
 
 router.post('/', (req,res) => {
@@ -67,24 +55,16 @@ router.post('/', (req,res) => {
 
       users.push(user);
 
-      const newUser = new UserModel({
-        'id': users.length,
-        'name': req.body.name,
-        'email': req.body.email.toLowerCase(),
-        'password': req.body.password,
-        'type': req.body.type.toLowerCase()
-      });
+      const newUser = new UserModel(user);
 
       newUser.save((err) => {
         if (err) {
           console.error(err);
         }
-        console.log('ok');
       });
 
       message = `Usuário cadastrado com sucesso: ${user.name}`;
     }
-
     cache.put('users', users);
     return res.status(200).json(message);
 });
