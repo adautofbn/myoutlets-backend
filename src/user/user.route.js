@@ -6,25 +6,29 @@ const userUtil = require('./user.util');
 const validUtil = require('../util/validate.util');
 
 const users = require('./users.json');
-
 const UserModel = require('./user.model');
 
 cache.put('users', users);
 
 router.get('/', (req,res) => {
-  let filteredUsers = cache.get('users');
-  if (req.query.type) {
-    filteredUsers = cache.get('users').filter((user) => user.type === req.query.type.toLowerCase());
-  }
-  res.json(filteredUsers);
+  UserModel.find({}).then((usersDb,err) => {
+    if (err) {
+      return res.status(404).json(err);
+    }
+    let filteredUsers = usersDb;
+    if (req.query.type) {
+      filteredUsers = usersDb.filter((user) => user.type === req.query.type.toLowerCase());
+    }
+    return res.status(200).json(filteredUsers);
+  });
 });
 
 router.get('/:id', (req,res) => {
-    UserModel.find({'id': req.params.id}).then((user,err) => {
-      if (err) {
-        res.status(404).json(`Usuário ${req.params.id} não encontrado`);
+    UserModel.findOne({'id': req.params.id}).then((user,err) => {
+      if (user === null || err) {
+        return res.status(404).json(`Usuário ${req.params.id} não encontrado`);
       }
-      res.status(200).json(user);
+      return res.status(200).json(user);
     });
 });
 
@@ -36,12 +40,6 @@ router.post('/', (req,res) => {
 
     if (error) {
       return res.status(400).json(error.details[0].message);
-    }
-
-    const filteredUsers = cache.get('users').filter((user) => user.email === req.body.email.toLowerCase());
-
-    if (filteredUsers.length > 0) {
-        message = `Email ${req.body.email} já cadastrado`;
     }
 
     if (!message) {
@@ -66,7 +64,7 @@ router.post('/', (req,res) => {
       message = `Usuário cadastrado com sucesso: ${user.name}`;
     }
     cache.put('users', users);
-    return res.status(200).json(message);
+    return res.status(201).json(message);
 });
 
 router.put('/:id', (req,res) => {
@@ -81,8 +79,24 @@ router.put('/:id', (req,res) => {
       return res.status(400).json(error.details[0].message);
     }
 
+    UserModel.findOne({'id': req.params.id}).then((userDb,err) => {
+      if (userDb === null || err) {
+        res.status(404).json(`Usuário ${req.params.id} não encontrado`);
+      }
+      userDb.name = req.body.name || userDb.name;
+      userDb.email = req.body.email || userDb.email;
+      userDb.password = req.body.password || userDb.password;
+      userDb.type = req.body.type || userDb.type;
+
+      userDb.save((errSave) => {
+        if (errSave) {
+          console.log(errSave);
+        }
+      });
+    });
+
     user.name = req.body.name || user.name;
-    user.email = req.body.email || user.quant;
+    user.email = req.body.email || user.email;
     user.password = req.body.password || user.password;
     user.type = req.body.type || user.type;
 
@@ -96,6 +110,12 @@ router.delete('/:id', (req,res) => {
     if (!user) {
       return res.status(404).json(`Usuário ${req.params.id} não encontrado`);
     }
+
+    UserModel.deleteOne({'id': req.params.id}).then((err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
 
     const index = users.indexOf(user);
     users.splice(index,1);

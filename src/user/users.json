@@ -1,12 +1,10 @@
-[
-    {"id": 1,
+[{"id": 1,
   "name": "Alberto",
   "email": "vendedor@gmail.com",
   "password": "vendedor123",
   "type": "representante"},
-    {"id": 2,
+  {"id": 2,
   "name": "Adalberto",
   "email": "cliente@gmail.com",
   "password": "cliente123",
-  "type": "cliente"}
-]
+  "type": "cliente"}]

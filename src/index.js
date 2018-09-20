@@ -6,7 +6,7 @@ const app = express();
 const mongoose = require('mongoose');
 
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://127.0.0.1/modb');
+mongoose.connect('mongodb://127.0.0.1/modb', {'useNewUrlParser': true});
 
 app.use(express.json());
 app.use(morgan('tiny'));
