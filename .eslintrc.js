@@ -11,10 +11,10 @@ module.exports = {
     },
     "rules": {
         "accessor-pairs": "error",
-        "array-bracket-newline": "error",
-        "array-bracket-spacing": "error",
+        "array-bracket-newline": "off",
+        "array-bracket-spacing": "off",
         "array-callback-return": "error",
-        "array-element-newline": "error",
+        "array-element-newline": "off",
         "arrow-body-style": "error",
         "arrow-parens": "error",
         "arrow-spacing": [
@@ -218,7 +218,7 @@ module.exports = {
         "require-atomic-updates": "error",
         "require-await": "error",
         "require-jsdoc": "off",
-        "require-unicode-regexp": "error",
+        "require-unicode-regexp": "off",
         "rest-spread-spacing": "error",
         "semi": "error",
         "semi-spacing": "error",

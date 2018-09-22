@@ -9,10 +9,6 @@ const products = require('./products.json');
 
 cache.put('products', products);
 
-router.use((req,res,next) => {
-    next();
-});
-
 router.get('/', (req,res) => {
   let filteredProducts = cache.get('products');
   if (req.query.type) {

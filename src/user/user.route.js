@@ -1,19 +1,18 @@
 const express = require('express');
 const router = new express.Router();
-const validUtil = require('../util/validate.util');
 
 const UserModel = require('./user.model');
 
 router.get('/', (req,res) => {
   UserModel.find({}).then((usersDb,err) => {
     if (err) {
-      return res.status(404).json(err);
+      res.status(404).json(err);
     }
     let filteredUsers = usersDb;
     if (req.query.type) {
       filteredUsers = usersDb.filter((user) => user.type === req.query.type.toLowerCase());
     }
-    return res.status(200).json(filteredUsers);
+    res.status(200).json(filteredUsers);
   });
 });
 
@@ -27,11 +26,6 @@ router.get('/:id', (req,res) => {
 });
 
 router.post('/', (req,res) => {
-  const {error} = validUtil.validateUser(req.body);
-
-  if (error) {
-    return res.status(400).json(error.details[0].message);
-  }
 
   const userCollec = UserModel.estimatedDocumentCount();
 
@@ -48,23 +42,19 @@ router.post('/', (req,res) => {
 
     newUser.save((err) => {
       if (err) {
-        console.error(err);
+        const message = err.errmsg || err.message;
+        res.status(400).json(message);
+      } else {
+        res.status(201).json(`Usuário cadastrado com sucesso: ${req.body.name}`);
       }
     });
   });
-  return res.status(201).json(`Usuário cadastrado com sucesso: ${req.body.name}`);
 });
 
 router.put('/:id', (req,res) => {
-    const {error} = validUtil.validateUser(req.body, true);
-
-    if (error) {
-      res.status(400).json(error.details[0].message);
-    }
-
     UserModel.findOne({'id': req.params.id}).then((userDb,err) => {
       if (userDb === null || err) {
-        return res.status(404).json(`Usuário ${req.params.id} não encontrado`);
+        res.status(404).json(`Usuário ${req.params.id} não encontrado`);
       }
       userDb.name = req.body.name || userDb.name;
       userDb.email = req.body.email || userDb.email;
@@ -73,10 +63,12 @@ router.put('/:id', (req,res) => {
 
       userDb.save((errSave) => {
         if (errSave) {
-          console.log(errSave);
+          const message = errSave.message || errSave.errmsg;
+          res.status(400).json(message);
+        } else {
+          res.status(200).json('Usuário atualizado com sucesso');
         }
       });
-      return res.status(200).json('Usuário atualizado com sucesso');
     });
 });
 
@@ -86,7 +78,7 @@ router.delete('/:id', (req,res) => {
         console.log(err);
       }
     });
-    return res.status(200).json('Usuário deletado com sucesso');
+    res.status(200).json('Usuário deletado com sucesso');
 });
 
 module.exports = router;
