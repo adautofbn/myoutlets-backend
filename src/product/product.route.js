@@ -1,99 +1,81 @@
 const express = require('express');
 const router = new express.Router();
-const cache = require('memory-cache');
 
-const productUtil = require('./product.util');
-const validUtil = require('../util/validate.util');
-
-const products = require('./products.json');
-
-cache.put('products', products);
+const ProductModel = require('./product.model');
 
 router.get('/', (req,res) => {
-  let filteredProducts = cache.get('products');
-  if (req.query.type) {
-    filteredProducts = cache.get('products').filter((product) => product.type === req.query.type.toLowerCase());
-  }
-  res.json(filteredProducts);
+  ProductModel.find({}).then((products,err) => {
+    if (err) {
+      res.status(404).json(err);
+    }
+    let filteredProducts = products;
+    if (req.query.type) {
+      filteredProducts = products.filter((product) => product.type === req.query.type.toLowerCase());
+    }
+    res.status(200).json(filteredProducts);
+  });
 });
 
 router.get('/:id', (req,res) => {
-    const product = productUtil.findProduct(cache.get('products'),req.params.id);
-    if (product) {
-      res.status(200).json(product);
-    } else {
-      res.status(404).json(`Item ${req.params.id} não encontrado`);
+  ProductModel.findOne({'id': req.params.id}).then((product,err) => {
+    if (product === null || err) {
+      return res.status(404).json(`Produto ${req.params.id} não encontrado`);
     }
+    return res.status(200).json(product);
+  });
 });
 
 router.post('/', (req,res) => {
+    const productCollec = ProductModel.estimatedDocumentCount();
 
-    let message = '';
-
-    const {error} = validUtil.validateProduct(req.body);
-
-    if (error) {
-      return res.status(400).json(error.details[0].message);
-    }
-
-    products.forEach((item) => {
-      if (item.name === req.body.name.toLowerCase()) {
-        item.quant += req.body.quant || 1;
-
-        message = `Item ${item.name} já existe no estoque, quantidade aumentada para ${item.quant}`;
-      }
-    });
-
-    if (!message) {
+    productCollec.then((count) => {
       const product = {
-        'id': products.length + 1,
+        'id': count + 1,
         'name': req.body.name.toLowerCase(),
         'quant': req.body.quant || 1,
         'type': req.body.type.toLowerCase()
       };
 
-      products.push(product);
-      message = `Produto cadastrado com sucesso: ${product.name}`;
-    }
+      const newProd = new ProductModel(product);
 
-    cache.put('products', products);
-    return res.status(200).json(message);
+      newProd.save((err) => {
+        if (err) {
+          const emessage = err.errmsg || err.message;
+          res.status(400).json(emessage);
+        } else {
+          res.status(201).json(`Produto cadastrado com sucesso: ${product.name}`);
+        }
+      });
+    });
 });
 
 router.put('/:id', (req,res) => {
-    const product = productUtil.findProduct(cache.get('products'),req.params.id);
-    if (!product) {
-      return res.status(404).json(`Item ${req.params.id} não encontrado`);
+  ProductModel.findOne({'id': req.params.id}).then((product,err) => {
+    if (product === null || err) {
+      res.status(404).json(`Produto ${req.params.id} não encontrado`);
     }
-
-    const {error} = validUtil.validateProduct(req.body, true);
-
-    if (error) {
-      return res.status(400).json(error.details[0].message);
-    }
-
     product.name = req.body.name || product.name;
     product.quant = req.body.quant || product.quant;
     product.type = req.body.type || product.type;
 
-    cache.put('products', products);
-
-    return res.status(200).json(`Produto atualizado com sucesso: ${product.name}`);
+    product.save((errSave) => {
+      if (errSave) {
+        const message = errSave.message || errSave.errmsg;
+        res.status(400).json(message);
+      } else {
+        res.status(200).json('Produto atualizado com sucesso');
+      }
+    });
+  });
 });
 
 router.delete('/:id', (req,res) => {
-
-    const product = productUtil.findProduct(cache.get('products'),req.params.id);
-    if (!product) {
-      return res.status(404).json(`Item ${req.params.id} não encontrado`);
+  ProductModel.deleteOne({'id': req.params.id}).then((err) => {
+    if (err) {
+      console.log(err);
     }
-
-    const index = products.indexOf(product);
-    products.splice(index,1);
-
-    cache.put('products', products);
-
-    return res.status(200).json(`Item deletado com sucesso: ${product.name}`);
+  });
+  res.status(200).json('Produto deletado com sucesso');
 });
 
 module.exports = router;

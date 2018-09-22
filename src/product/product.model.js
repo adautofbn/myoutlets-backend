@@ -2,9 +2,23 @@ const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema(
 {'id': Number,
- 'name': String,
- 'quant': Number,
- 'type': String},
+ 'name': {
+     'type': String,
+     'unique': true,
+     'minlength': [3, 'Name too short'],
+     'required': true
+ },
+ 'quant': {
+     'type': Number,
+     'min': [1, 'Minimum quantity is 1'],
+     'default': 1,
+     'required': true
+ },
+ 'type': {
+     'type': String,
+     'enum': ['camisa', 'calca', 'calcado', 'acessorio', 'short', 'saia', 'bermuda'],
+     'required': true
+ }},
 {'versionKey': false}
 );
 

@@ -5,10 +5,8 @@ const cache = require('memory-cache');
 const productUtil = require('../product/product.util');
 const validUtil = require('../util/validate.util');
 
-const products = require('../product/products.json');
 const bag = require('./bag.json');
 
-cache.put('products', products);
 cache.put('bag', bag);
 
 router.use((req,res,next) => {

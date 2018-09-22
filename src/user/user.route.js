@@ -4,13 +4,13 @@ const router = new express.Router();
 const UserModel = require('./user.model');
 
 router.get('/', (req,res) => {
-  UserModel.find({}).then((usersDb,err) => {
+  UserModel.find({}).then((users,err) => {
     if (err) {
       res.status(404).json(err);
     }
-    let filteredUsers = usersDb;
+    let filteredUsers = users;
     if (req.query.type) {
-      filteredUsers = usersDb.filter((user) => user.type === req.query.type.toLowerCase());
+      filteredUsers = users.filter((user) => user.type === req.query.type.toLowerCase());
     }
     res.status(200).json(filteredUsers);
   });
@@ -45,23 +45,23 @@ router.post('/', (req,res) => {
         const message = err.errmsg || err.message;
         res.status(400).json(message);
       } else {
-        res.status(201).json(`Usuário cadastrado com sucesso: ${req.body.name}`);
+        res.status(201).json(`Usuário cadastrado com sucesso: ${user.name}`);
       }
     });
   });
 });
 
 router.put('/:id', (req,res) => {
-    UserModel.findOne({'id': req.params.id}).then((userDb,err) => {
-      if (userDb === null || err) {
+    UserModel.findOne({'id': req.params.id}).then((user,err) => {
+      if (user === null || err) {
         res.status(404).json(`Usuário ${req.params.id} não encontrado`);
       }
-      userDb.name = req.body.name || userDb.name;
-      userDb.email = req.body.email || userDb.email;
-      userDb.password = req.body.password || userDb.password;
-      userDb.type = req.body.type || userDb.type;
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      user.password = req.body.password || user.password;
+      user.type = req.body.type || user.type;
 
-      userDb.save((errSave) => {
+      user.save((errSave) => {
         if (errSave) {
           const message = errSave.message || errSave.errmsg;
           res.status(400).json(message);
