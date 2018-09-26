@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
 router.post('/', (req,res) => {
     ProductModel.findOne({'id': req.body.id}).then((product,err) => {
       if (product === null || err) {
-        return res.status(400).json(`Item ${req.body.id} não encontrado`);
+        return res.status(404).json(`Item ${req.body.id} não encontrado`);
       }
 
       const reqQuant = req.body.quant || 1;
@@ -53,7 +53,7 @@ router.post('/', (req,res) => {
 router.delete('/', (req,res) => {
   const product = bag.find((item) => item.id === parseInt(req.body.id));
   if (!product) {
-    return res.status(400).json(`Item ${req.body.id} não encontrado`);
+    return res.status(404).json(`Item ${req.body.id} não encontrado`);
   }
   const index = bag.indexOf(product);
   bag.splice(index,1);

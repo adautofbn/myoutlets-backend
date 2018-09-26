@@ -6,18 +6,18 @@ const userSchema = new mongoose.Schema(
 {'id': Number,
  'name': {
      'type': String,
-     'minlength': [3, 'Name too short'],
+     'minlength': [3, 'Nome muito curto, precisa ter mais de 3 caracteres'],
      'required': true
  },
  'email': {
      'type': String,
      'unique': true,
-     'match': [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
+     'match': [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Insira um endereço de email válido'],
      'required': true
  },
  'password': {
      'type': String,
-     'minlength': [6, 'Password too short'],
+     'minlength': [6, 'Senha curta, necessário 6 ou mais caracteres'],
      'select': false,
      'required': true
  },

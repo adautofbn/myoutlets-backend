@@ -71,11 +71,11 @@ router.put('/:id', (req,res) => {
 
 router.delete('/:id', (req,res) => {
   ProductModel.deleteOne({'id': req.params.id}).then((err) => {
-    if (err) {
-      console.log(err);
+    if (err.n === 0) {
+      return res.status(404).json(`Produto ${req.params.id} não encontrado`);
     }
+    return res.status(200).json(`Produto ${req.params.id} deletado com sucesso`);
   });
-  res.status(200).json('Produto deletado com sucesso');
 });
 
 module.exports = router;

@@ -45,7 +45,7 @@ router.post('/', (req,res) => {
         const message = err.errmsg || err.message;
         res.status(400).json(message);
       } else {
-        res.status(201).json(`Usuário cadastrado com sucesso: ${user.name}`);
+        res.status(200).json(`Usuário cadastrado com sucesso: ${user.name}`);
       }
     });
   });
@@ -74,11 +74,11 @@ router.put('/:id', (req,res) => {
 
 router.delete('/:id', (req,res) => {
     UserModel.deleteOne({'id': req.params.id}).then((err) => {
-      if (err) {
-        console.log(err);
+      if (err.n === 0) {
+        return res.status(404).json(`Usuário ${req.params.id} não encontrado`);
       }
+      return res.status(200).json(`Usuário ${req.params.id} deletado com sucesso`);
     });
-    res.status(200).json('Usuário deletado com sucesso');
 });
 
 module.exports = router;

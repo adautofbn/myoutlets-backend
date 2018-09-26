@@ -1,6 +1,7 @@
 const morgan = require('morgan');
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 
 const mongoose = require('mongoose');
@@ -27,6 +28,22 @@ app.use('/docs', swaggerRoute);
 app.get('/', (req,res) => {
   res.json('Welcome to MyOutlet`s');
 });
+
+const nodeEnv = process.env.NODE_ENV || 'development';
+
+let corsOptions = {};
+
+if (nodeEnv === 'production') {
+  corsOptions = {
+    'origin': 'http://localhost:3000',
+    'optionsSuccessStatus': 200
+  };
+  console.log('The system is running in production');
+} else {
+  console.log('The system is not running in production');
+}
+
+app.use(cors(corsOptions));
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}`));

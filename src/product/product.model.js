@@ -5,12 +5,12 @@ const productSchema = new mongoose.Schema(
  'name': {
      'type': String,
      'unique': true,
-     'minlength': [3, 'Name too short'],
+     'minlength': [3, 'Nome muito curto, precisa ter mais de 3 caracteres'],
      'required': true
  },
  'quant': {
      'type': Number,
-     'min': [1, 'Minimum quantity is 1'],
+     'min': [1, 'Quantidade mínima de produtos é 1'],
      'default': 1,
      'required': true
  },
