@@ -1,5 +1,9 @@
+/* eslint-disable no-sync */
+
 const express = require('express');
 const router = new express.Router();
+const bcrypt = require('bcryptjs');
+
 
 const UserModel = require('./user.model');
 
@@ -26,6 +30,8 @@ router.get('/:id', (req,res) => {
 });
 
 router.post('/', (req,res) => {
+
+  req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync());
 
   const userCollec = UserModel.estimatedDocumentCount();
 
