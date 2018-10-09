@@ -2,6 +2,7 @@ const express = require('express');
 const router = new express.Router();
 
 const ProductModel = require('./product.model');
+const auth = require('../auth/auth.service');
 
 router.get('/', (req,res) => {
   ProductModel.find({}).then((products,err) => {
@@ -16,7 +17,7 @@ router.get('/', (req,res) => {
   });
 });
 
-router.get('/:id', (req,res) => {
+router.get('/:id', auth.ensureAuthenticated, (req,res) => {
   ProductModel.findOne({'id': req.params.id}).then((product,err) => {
     if (product === null || err) {
       return res.status(404).json(`Produto ${req.params.id} não encontrado`);
@@ -25,7 +26,7 @@ router.get('/:id', (req,res) => {
   });
 });
 
-router.post('/', (req,res) => {
+router.post('/', auth.ensureAuthenticated, auth.authenticateByRole, (req,res) => {
     const productCollec = ProductModel.estimatedDocumentCount();
 
     productCollec.then((count) => {
@@ -33,7 +34,8 @@ router.post('/', (req,res) => {
         'id': count + 1,
         'name': req.body.name.toLowerCase(),
         'quant': req.body.quant || 1,
-        'type': req.body.type.toLowerCase()
+        'type': req.body.type.toLowerCase(),
+        'owner': req.user.id
       };
 
       const newProd = new ProductModel(product);
@@ -49,7 +51,7 @@ router.post('/', (req,res) => {
     });
 });
 
-router.put('/:id', (req,res) => {
+router.put('/:id', auth.ensureAuthenticated, auth.authenticateByRole, auth.authenticateByOwnership, (req,res) => {
   ProductModel.findOne({'id': req.params.id}).then((product,err) => {
     if (product === null || err) {
       res.status(404).json(`Produto ${req.params.id} não encontrado`);
@@ -69,7 +71,7 @@ router.put('/:id', (req,res) => {
   });
 });
 
-router.delete('/:id', (req,res) => {
+router.delete('/:id', auth.ensureAuthenticated, auth.authenticateByRole, auth.authenticateByOwnership, (req,res) => {
   ProductModel.deleteOne({'id': req.params.id}).then((err) => {
     if (err.n === 0) {
       return res.status(404).json(`Produto ${req.params.id} não encontrado`);

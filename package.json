@@ -4,10 +4,10 @@
   "description": "Backend do projeto da disciplina Principios de Desenvolvimento Web do curso de Ciência da Computação da UFCG",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/index.js",
+    "start": "NODE_ENV=production node ./src/index.js",
     "test": "mocha",
-    "dev": "NODE_ENV=production node ./src/index.js",
-    "dev:mon": "NODE_ENV=production nodemon ./src/index.js"
+    "dev": "node ./src/index.js",
+    "dev:mon": "nodemon ./src/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,16 +20,21 @@
   },
   "homepage": "https://github.com/adautofbn/pdw-backend#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongodb-session": "^2.0.3",
     "cors": "^2.8.4",
     "express": "^4.16.3",
+    "express-session": "^1.15.6",
     "memory-cache": "^0.2.0",
-    "mongoose": "^5.2.17",
+    "mongoose": "^5.3.2",
     "morgan": "^1.9.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "swagger-jsdoc": "^3.2.3",
     "swagger-ui-express": "^4.0.1"
   },
   "devDependencies": {
-    "eslint": "^5.6.0",
+    "eslint": "^5.6.1",
     "mocha": "^5.2.0",
     "supertest": "^3.3.0"
   }

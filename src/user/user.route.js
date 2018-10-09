@@ -1,7 +1,11 @@
+/* eslint-disable no-sync */
+
 const express = require('express');
 const router = new express.Router();
+const bcrypt = require('bcryptjs');
 
 const UserModel = require('./user.model');
+const auth = require('../auth/auth.service');
 
 router.get('/', (req,res) => {
   UserModel.find({}).then((users,err) => {
@@ -9,14 +13,14 @@ router.get('/', (req,res) => {
       res.status(404).json(err);
     }
     let filteredUsers = users;
-    if (req.query.type) {
-      filteredUsers = users.filter((user) => user.type === req.query.type.toLowerCase());
+    if (req.query.role) {
+      filteredUsers = users.filter((user) => user.role === req.query.role.toLowerCase());
     }
     res.status(200).json(filteredUsers);
   });
 });
 
-router.get('/:id', (req,res) => {
+router.get('/:id', auth.ensureAuthenticated, auth.authenticateById,(req,res) => {
     UserModel.findOne({'id': req.params.id}).then((user,err) => {
       if (user === null || err) {
         return res.status(404).json(`Usuário ${req.params.id} não encontrado`);
@@ -27,6 +31,8 @@ router.get('/:id', (req,res) => {
 
 router.post('/', (req,res) => {
 
+  req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+
   const userCollec = UserModel.estimatedDocumentCount();
 
   userCollec.then((count) => {
@@ -35,7 +41,7 @@ router.post('/', (req,res) => {
       'name': req.body.name,
       'email': req.body.email.toLowerCase(),
       'password': req.body.password,
-      'type': req.body.type.toLowerCase()
+      'role': req.body.role.toLowerCase()
     };
 
     const newUser = new UserModel(user);
@@ -51,7 +57,7 @@ router.post('/', (req,res) => {
   });
 });
 
-router.put('/:id', (req,res) => {
+router.put('/:id', auth.ensureAuthenticated, auth.authenticateById, (req,res) => {
     UserModel.findOne({'id': req.params.id}).then((user,err) => {
       if (user === null || err) {
         res.status(404).json(`Usuário ${req.params.id} não encontrado`);
@@ -59,7 +65,7 @@ router.put('/:id', (req,res) => {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
       user.password = req.body.password || user.password;
-      user.type = req.body.type || user.type;
+      user.role = req.body.role || user.role;
 
       user.save((errSave) => {
         if (errSave) {
@@ -72,7 +78,7 @@ router.put('/:id', (req,res) => {
     });
 });
 
-router.delete('/:id', (req,res) => {
+router.delete('/:id', auth.ensureAuthenticated, auth.authenticateById, (req,res) => {
     UserModel.deleteOne({'id': req.params.id}).then((err) => {
       if (err.n === 0) {
         return res.status(404).json(`Usuário ${req.params.id} não encontrado`);

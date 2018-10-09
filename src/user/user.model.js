@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
 {'id': Number,
  'name': {
      'type': String,
@@ -18,10 +18,9 @@ const userSchema = new mongoose.Schema(
  'password': {
      'type': String,
      'minlength': [6, 'Senha curta, necessário 6 ou mais caracteres'],
-     'select': false,
      'required': true
  },
- 'type': {
+ 'role': {
      'type': String,
      'enum': ['cliente', 'representante'],
      'required': true
@@ -29,6 +28,7 @@ const userSchema = new mongoose.Schema(
 {'versionKey': false}
 );
 
-const user = mongoose.model('User', userSchema);
+const user = mongoose.model('User', UserSchema);
 
 module.exports = user;
+
