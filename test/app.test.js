@@ -15,19 +15,9 @@ describe('GET /', () => {
 });
 
 describe('GET /produto', () => {
-  it('respond with json', (done) => {
+  it('respond with json', (err,done) => {
     request(app)
       .get('/produto')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end(done)
-  });
-});
-
-describe('GET /bolsa', () => {
-  it('respond with json', (done) => {
-    request(app)
-      .get('/bolsa')
       .expect('Content-Type', /json/)
       .expect(200)
       .end(done)
