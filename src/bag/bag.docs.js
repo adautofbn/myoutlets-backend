@@ -57,15 +57,20 @@
  *      - Bolsa
  *     summary: Exclui um produto da bolsa
  *     description: Retorna uma mensagem confirmando que o produto foi excluído
+ *     consumes:
+ *      - application/json
  *     produces:
  *      - application/json
  *     parameters:
- *      - in: query
- *        name: id
- *        type: integer
- *        required: true
- *        minimum: 1
+ *      - in: body
+ *        name: ID do Produto
  *        description: Id do produto que vai ser excluído
+ *        type: object
+ *        properties:
+ *              id:
+ *                  type: integer
+ *                  format: int32
+ *                  example: 1
  *     responses:
  *        200:
  *          description: Produto excluído da bolsa
