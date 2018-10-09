@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema(
 {'id': Number,

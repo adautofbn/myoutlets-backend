@@ -4,7 +4,6 @@ const express = require('express');
 const router = new express.Router();
 const bcrypt = require('bcryptjs');
 
-
 const UserModel = require('./user.model');
 
 router.get('/', (req,res) => {
@@ -31,7 +30,7 @@ router.get('/:id', (req,res) => {
 
 router.post('/', (req,res) => {
 
-  req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync());
+  req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
 
   const userCollec = UserModel.estimatedDocumentCount();
 
