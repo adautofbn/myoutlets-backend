@@ -29,13 +29,13 @@ const productRoute = require('./product/product.route');
 const bagRoute = require('./bag/bag.route');
 const userRoute = require('./user/user.route');
 const swaggerRoute = require('./docs/docs.route');
-const loginRoute = require('./auth/login.route');
+const authRoute = require('./auth/auth.route');
 
 app.use('/produto', productRoute);
 app.use('/bolsa', bagRoute);
 app.use('/usuario', userRoute);
 app.use('/docs', swaggerRoute);
-app.use('/login', loginRoute);
+app.use('/login', authRoute);
 
 app.get('/', (req,res) => {
   res.json('Welcome to MyOutlet`s');

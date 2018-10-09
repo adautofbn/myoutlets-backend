@@ -28,7 +28,7 @@ router.delete('/', auth.ensureAuthenticated,(req, res) => {
     res.json('Deslogado com sucesso');
 });
 
-router.get('/auth', (req,res) => {
+router.get('/check', (req,res) => {
     if (req.isAuthenticated()) {
         res.status(200).json({'user': req.user,
         'status': true});
