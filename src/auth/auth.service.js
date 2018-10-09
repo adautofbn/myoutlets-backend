@@ -1,6 +1,6 @@
 const ensureAuthenticated = (req, res, next) => {
     if (!req.isAuthenticated()) {
-      return res.sendStatus(401).json('Sem permissão, precisa estar logado');
+      return res.status(401).json('Sem permissão, precisa estar logado');
     }
     return next();
 };

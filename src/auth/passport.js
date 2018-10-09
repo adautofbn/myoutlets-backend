@@ -11,7 +11,7 @@ function validPassword (password, hash) {
 module.exports = function(passport) {
 
     function findUserById(id, callback) {
-        const ObjectId = require("mongodb").ObjectId;
+        const ObjectId = require('mongodb').ObjectId;
         UserModel.findById(id, (err, doc) => {
             callback(err, doc);
         });

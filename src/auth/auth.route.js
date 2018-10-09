@@ -25,16 +25,15 @@ router.post('/', (req,res,next) => {
 
 router.delete('/', auth.ensureAuthenticated,(req, res) => {
     req.logout();
-    res.json('Deslogado com sucesso');
+    return res.json('Deslogado com sucesso');
 });
 
 router.get('/check', (req,res) => {
     if (req.isAuthenticated()) {
-        res.status(200).json({'user': req.user,
+        return res.status(200).json({'user': req.user,
         'status': true});
-    } else {
-        res.redirect('/');
     }
+    return res.redirect('/');
 });
 
 module.exports = router;
