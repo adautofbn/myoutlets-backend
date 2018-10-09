@@ -14,7 +14,7 @@
  *          password:
  *              type: string
  *              example: senha123
- *          type:
+ *          role:
  *              type: string
  *              example: cliente
  *

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 const morgan = require('morgan');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -5,6 +7,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session');
+const MongoStore = require('connect-mongodb-session')(session);
 const app = express();
 const HALF_HOUR = 1800000;
 
@@ -17,8 +20,24 @@ app.use(express.static('static'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended': false}));
 
+const store = new MongoStore({
+  'uri': 'mongodb://127.0.0.1/modb',
+  'collection': 'session'
+});
+
+store.on('connected', () => {
+  store.client;
+});
+
+store.on('error', (error) => {
+  if (error) {
+    console.log(error);
+  }
+});
+
 require('./auth/passport')(passport);
-app.use(session({'secret': 'secret',
+app.use(session({'secret': 'my_outlet_secret',
+  store,
   'cookie': {'maxAge': HALF_HOUR},
   'resave': false,
   'saveUninitialized': false}));
