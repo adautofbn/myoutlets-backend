@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session');
 const app = express();
+const HALF_HOUR = 1800000;
 
 mongoose.Promise = Promise;
 mongoose.connect('mongodb://127.0.0.1/modb', {'useNewUrlParser': true});
@@ -18,7 +19,7 @@ app.use(bodyParser.urlencoded({'extended': false}));
 
 require('./auth/passport')(passport);
 app.use(session({'secret': 'secret',
-  'cookie': {'maxAge': 60000},
+  'cookie': {'maxAge': HALF_HOUR},
   'resave': false,
   'saveUninitialized': false}));
 app.use(passport.initialize());

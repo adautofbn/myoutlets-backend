@@ -1,7 +1,6 @@
 /* eslint-disable */
 
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema(
 {'id': Number,
@@ -21,7 +20,7 @@ const UserSchema = new mongoose.Schema(
      'minlength': [6, 'Senha curta, necessário 6 ou mais caracteres'],
      'required': true
  },
- 'type': {
+ 'role': {
      'type': String,
      'enum': ['cliente', 'representante'],
      'required': true

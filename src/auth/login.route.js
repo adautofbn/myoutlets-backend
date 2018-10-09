@@ -4,6 +4,8 @@ const express = require('express');
 const router = new express.Router();
 const passport = require('passport');
 
+const auth = require('./auth.service');
+
 router.post('/', (req,res,next) => {
     passport.authenticate('local', (err,user,info) => {
         if (err) {
@@ -21,7 +23,7 @@ router.post('/', (req,res,next) => {
     })(req,res,next);
 });
 
-router.delete('/', (req, res) => {
+router.delete('/', auth.ensureAuthenticated,(req, res) => {
     req.logout();
     res.json('Deslogado com sucesso');
 });
