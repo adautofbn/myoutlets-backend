@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 const LocalStrategy = require('passport-local').Strategy;
-const UserModel = require('./user/user.model');
+const UserModel = require('../user/user.model');
 const bcrypt = require('bcryptjs');
 
 function validPassword (password, hash) {

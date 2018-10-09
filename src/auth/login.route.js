@@ -27,9 +27,8 @@ router.delete('/', (req, res) => {
 });
 
 router.get('/auth', (req,res) => {
-    const {user} = req;
-    if (user) {
-        res.status(200).json({user,
+    if (req.isAuthenticated()) {
+        res.status(200).json({'user': req.user,
         'status': true});
     } else {
         res.redirect('/');
