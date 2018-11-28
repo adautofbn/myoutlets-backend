@@ -1,0 +1,14 @@
+[
+{
+	"email": "alex@aa.ee",
+	"password": "alex123",
+	"name": "Alex",
+	"role": "representante"
+},
+{
+	"email": "alex@bb.ee",
+	"password": "alex123",
+	"name": "Alex",
+	"role": "cliente"
+}
+]

@@ -28,12 +28,12 @@ exports.createProduct = (req,res) => {
     productCollec.then((count) => {
       const product = {
         'id': count + 1,
-        'name': req.body.product.name.toLowerCase(),
-        'quant': req.body.product.quant || 1,
-        'type': req.body.product.type.toLowerCase(),
-        'price': req.body.product.price || 0,
-        'img': req.body.product.img,
-        'description': req.body.product.description.toLowerCase(),
+        'name': req.body.name.toLowerCase(),
+        'quant': req.body.quant || 1,
+        'type': req.body.type.toLowerCase(),
+        'price': req.body.price || 0,
+        'img': req.body.img,
+        'description': req.body.description.toLowerCase(),
         'owner': 1
       };
 
