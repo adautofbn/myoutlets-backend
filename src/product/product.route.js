@@ -8,7 +8,7 @@ router.get('/', controller.getAllProducts);
 
 router.get('/:id', auth.ensureAuthenticated, controller.getProductById);
 
-router.post('/', auth.ensureAuthenticated, auth.authenticateByRole, controller.createProduct);
+router.post('/', controller.createProduct);
 
 router.put('/:id', auth.ensureAuthenticated, auth.authenticateByRole, auth.authenticateByOwnership, controller.updateProduct);
 
