@@ -15,6 +15,16 @@
  *          type:
  *              type: string
  *              example: camisa
+ *          price:
+ *              type:  integer
+ *              format: int32
+ *              example: 0
+ *          img:
+ *              type: string
+ *              example: https://via.placeholder.com/150
+ *          description:
+ *              type: string
+ *              example: camisa branca e gola redonda
  *
  * /produto:
  *   get:

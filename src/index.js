@@ -14,6 +14,12 @@ const HALF_HOUR = 1800000;
 mongoose.Promise = Promise;
 mongoose.connect('mongodb://127.0.0.1/modb', {'useNewUrlParser': true});
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(express.static('static'));

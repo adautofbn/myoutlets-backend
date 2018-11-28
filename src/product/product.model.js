@@ -19,8 +19,18 @@ const productSchema = new mongoose.Schema(
      'enum': ['camisa', 'calca', 'calcado', 'acessorio', 'short', 'saia', 'bermuda'],
      'required': true
  },
- 'owner': {
+ 'price': {
      'type': Number,
+     'default': 0,
+     'required': true
+ },
+ 'img': String,
+ 'description': {
+     'type': String,
+     'required': true
+ },
+ 'owner': {
+     'type': Number ,
      'required': true
  }},
 {'versionKey': false}

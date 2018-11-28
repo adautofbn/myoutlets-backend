@@ -31,6 +31,9 @@ exports.createProduct = (req,res) => {
         'name': req.body.name.toLowerCase(),
         'quant': req.body.quant || 1,
         'type': req.body.type.toLowerCase(),
+        'price': req.body.price || 0,
+        'img': req.body.img,
+        'description': req.body.description.toLowerCase(),
         'owner': req.user.id
       };
 
