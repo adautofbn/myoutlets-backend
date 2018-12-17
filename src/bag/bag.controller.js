@@ -39,7 +39,6 @@ exports.addProduct = (req,res) => {
 };
 
 exports.removeProduct = (req,res) => {
-    console.log(req.body);
     const product = bag.find((item) => item.id === parseInt(req.body.id));
     if (!product) {
       return res.status(404).json(`Item ${req.body.id} não encontrado`);
