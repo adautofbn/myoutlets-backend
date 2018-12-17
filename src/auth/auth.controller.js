@@ -29,5 +29,5 @@ exports.check = (req,res) => {
         return res.status(200).json({'user': req.user,
         'status': true});
     }
-    return res.redirect('/');
+    return res.json('Nao autorizado');
 };
