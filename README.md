@@ -14,6 +14,6 @@ Devido a proposta de criação de um projeto web que tivesse aplicação no mund
 
 Um ambiente web centralizado no comércio de roupas (camisas,calças,sapatos,etc.) disponível para vários vendedores e clientes fazendo o intermédio entre eles, simplificando assim o comércio.
 
-# Como usar?
+# Instalação
 
-Basta fazer seu cadastro na plataforma como vendedor ou cliente e a plataforma se adequará às suas necessidades, disponibilizando meios de cadastramento ou compra de produtos.
+Faça clone deste repositório e com um terminal aberto dentro da pasta "pdw-backend" execute o seguinte comando: npm install && npm start
