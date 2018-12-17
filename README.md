@@ -16,4 +16,10 @@ Um ambiente web centralizado no comércio de roupas (camisas,calças,sapatos,etc
 
 # Instalação
 
+###### Programas necessários
+
+Node.JS, NPM e MongoDB
+
+###### Tutorial
+
 Faça clone deste repositório e com um terminal aberto dentro da pasta "pdw-backend" execute o seguinte comando: npm install && npm start
