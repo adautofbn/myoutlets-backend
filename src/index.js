@@ -10,6 +10,8 @@ const session = require('express-session');
 const MongoStore = require('connect-mongodb-session')(session);
 const app = express();
 const HALF_HOUR = 1800000;
+const cors = require('cors');
+let corsOptions = {};
 
 mongoose.Promise = Promise;
 mongoose.connect('mongodb://127.0.0.1/modb', {'useNewUrlParser': true});
@@ -63,6 +65,20 @@ const userRoute = require('./user/user.route');
 const swaggerRoute = require('./docs/docs.route');
 const authRoute = require('./auth/auth.route');
 
+const nodeEnv = process.env.NODE_ENV || 'development';
+
+if (nodeEnv === 'production') {
+  corsOptions = {
+    'origin': 'http://localhost:3000',
+    'optionsSuccessStatus': 200
+  };
+  console.log('The system is running in production');
+} else {
+  console.log('The system is not running in production');
+}
+
+app.use(cors(corsOptions));
+
 app.use('/produto', productRoute);
 app.use('/bolsa', bagRoute);
 app.use('/usuario', userRoute);
@@ -72,14 +88,6 @@ app.use('/login', authRoute);
 app.get('/', (req,res) => {
   res.json('Welcome to MyOutlet`s');
 });
-
-const nodeEnv = process.env.NODE_ENV || 'development';
-
-if (nodeEnv === 'production') {
-  console.log('The system is running in production');
-} else {
-  console.log('The system is not running in production');
-}
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}`));
