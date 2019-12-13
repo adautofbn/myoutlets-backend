@@ -29,7 +29,7 @@
     "memory-cache": "^0.2.0",
     "mongoose": "^5.3.2",
     "morgan": "^1.9.1",
-    "npm": "^6.4.1",
+    "npm": "^6.13.4",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "swagger-jsdoc": "^3.2.3",
